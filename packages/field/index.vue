@@ -64,9 +64,9 @@
       </div>
     </div>
     <div
-      v-if="errorMessage"
-      v-text="errorMessage"
-      :class="b('error-message')"
+      v-if="scopeErrorMessage"
+      v-text="scopeErrorMessage"
+      :class="b('scope-error-message')"
     />
   </cell>
 </template>
@@ -101,13 +101,17 @@ export default create({
 
   data() {
     return {
-      focused: false
+      focused: false,
+      scopeErrorMessage: undefined
     };
   },
 
   watch: {
     value() {
       this.$nextTick(this.adjustSize);
+    },
+    errorMessage(val) {
+      this.scopeErrorMessage = val
     }
   },
 
@@ -202,7 +206,6 @@ export default create({
 
       this.$emit('keypress', event);
     },
-
     adjustSize() {
       const { input } = this.$refs;
       if (!(this.type === 'textarea' && this.autosize) || !input) {
@@ -225,6 +228,12 @@ export default create({
       if (height) {
         input.style.height = height + 'px';
       }
+    },
+    setError(errorMessage){
+      this.scopeErrorMessage = errorMessage
+    },
+    cleanError(){
+      this.scopeErrorMessage = null
     }
   }
 });
